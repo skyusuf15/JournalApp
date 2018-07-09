@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">My Journal</string>
+    <string name="title_activity_view_entries">View All Notes</string>
+    <string name="action_logout">Logout</string>
+
+
+    <string name="edit_description">Whats would you like to jot down today?</string>
+    <string name="add_button">Add</string>
+    <string name="update_button">Update</string>
+</resources>
