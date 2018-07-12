@@ -30,11 +30,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        createUser = (Button) findViewById(R.id.createUser);
-        moveToLogin = (Button) findViewById(R.id.moveToLogin);
+        createUser = findViewById(R.id.createUser);
+        moveToLogin = findViewById(R.id.moveToLogin);
 
-        userEmailEdit = (EditText) findViewById(R.id.emailEditText);
-        userPasswordEdit = (EditText) findViewById(R.id.passwordEditText);
+        userEmailEdit = findViewById(R.id.emailEditText);
+        userPasswordEdit = findViewById(R.id.passwordEditText);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {

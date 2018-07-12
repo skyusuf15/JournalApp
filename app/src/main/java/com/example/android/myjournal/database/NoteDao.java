@@ -12,8 +12,8 @@ import java.util.List;
 @Dao
 public interface NoteDao {
 
-    @Query("SELECT * FROM notes ORDER BY updated_at")
-    List<NoteEntry> loadAllNotes();
+    @Query("SELECT * FROM notes ORDER BY created_at")
+    List<NoteEntry> loadAllNotesByUserId();
 
     @Insert
     void insertNotes(NoteEntry noteEntry);
@@ -23,4 +23,7 @@ public interface NoteDao {
 
     @Delete
     void deleteNotes(NoteEntry noteEntry);
+
+    @Query("SELECT * FROM notes WHERE id = :id")
+    NoteEntry loadNoteById(int id);
 }

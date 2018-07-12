@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +27,7 @@ public class AddNotes extends AppCompatActivity {
     private static final int DEFAULT_NOTE_ID = -1;
     // Constant for logging
     private static final String TAG = AddNotes.class.getSimpleName();
-
+    private static final String USERID = FirebaseAuth.getInstance().getUid();
 
     //Fields for views
     EditText mEditText;
@@ -35,6 +36,7 @@ public class AddNotes extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
     private int mNoteId = DEFAULT_NOTE_ID;
+
     // Member variable for the Database
     private AppDatabase mDb;
 
@@ -55,6 +57,19 @@ public class AddNotes extends AppCompatActivity {
             mButton.setText(R.string.update_button);
             if (mNoteId == DEFAULT_NOTE_ID) {
                 // populate the UI
+                mNoteId = intent.getIntExtra(EXTRA_NOTE_ID, DEFAULT_NOTE_ID);
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        final NoteEntry note = mDb.noteDao().loadNoteById(mNoteId);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                populateUI(note);
+                            }
+                        });
+                    }
+                });
             }
         }
 
@@ -65,7 +80,8 @@ public class AddNotes extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-
+                    Log.d(TAG, "onAuthStateChanged: USER= " + user);
+                    Log.d(TAG, "\nonAuthStateChanged: Uid= " + USERID);
                 } else {
 
                 }
@@ -93,16 +109,30 @@ public class AddNotes extends AppCompatActivity {
     }
 
     private void populateUI(NoteEntry noteEntry) {
-
+        if (noteEntry == null) {
+            return;
+        }
+        mEditText.setText(noteEntry.getNote());
     }
 
     private void onSaveButtonClicked() {
         String noteString = mEditText.getText().toString().trim();
         Date date = new Date();
 
-        NoteEntry noteEntry = new NoteEntry(noteString, 1, date);
-        mDb.noteDao().insertNotes(noteEntry);
-        finish();
+        final NoteEntry noteEntry = new NoteEntry(noteString, USERID, date);
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (mNoteId == DEFAULT_NOTE_ID) {
+                    mDb.noteDao().insertNotes(noteEntry);
+                } else {
+                    noteEntry.setId(mNoteId);
+                    mDb.noteDao().updateNotes(noteEntry);
+                }
+                finish();
+            }
+        });
+
     }
 
 

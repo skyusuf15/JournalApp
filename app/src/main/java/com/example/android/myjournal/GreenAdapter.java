@@ -1,6 +1,7 @@
 package com.example.android.myjournal;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,56 +9,117 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.myjournal.database.NoteEntry;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
+
 import static android.content.ContentValues.TAG;
 
-public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NumberViewHolder> {
+public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NoteViewHolder> {
 
-    private int mNumberItems;
+    // Constant for date format
+    private static final String DATE_FORMAT = "dd/MM/yyy";
+
+    // Member variable to handle item clicks
+    final private ItemClickListener mItemClickListener;
+
+    // Class variables for the List that holds task data and the Context
+    private List<NoteEntry> mNoteEntries;
+    private Context mContext;
+    // Date formatter
+    private SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
 
 
-    public GreenAdapter(int numberOfItems) {
-        mNumberItems = numberOfItems;
+    public GreenAdapter(Context context, ItemClickListener listener) {
+        mContext = context;
+        mItemClickListener = listener;
     }
 
-
+    /**
+     * Called when ViewHolders are created to fill a RecyclerView.
+     *
+     * @return A new TaskViewHolder that holds the view for each task
+     */
     @Override
-    public NumberViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.content_view_entries;
-        LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
+    public NoteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Inflate the task_layout to a view
+        View view = LayoutInflater.from(mContext)
+                .inflate(R.layout.content_view_entries, parent, false);
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
-        NumberViewHolder viewHolder = new NumberViewHolder(view);
-
-        return viewHolder;
+        return new NoteViewHolder(view);
     }
 
+
+    /**
+     * Called by the RecyclerView to display data at a specified position in the Cursor.
+     *
+     * @param holder   The ViewHolder to bind Cursor data to
+     * @param position The position of the data in the Cursor
+     */
     @Override
-    public void onBindViewHolder(NumberViewHolder holder, int position) {
-        Log.d(TAG, "#" + position);
-        holder.bind(position);
+    public void onBindViewHolder(NoteViewHolder holder, int position) {
+        // Determine the values of the wanted data
+        NoteEntry noteEntry = mNoteEntries.get(position);
+        String note = noteEntry.getNote();
+        String updatedAt = dateFormat.format(noteEntry.getUpdatedAt());
+
+        //Set values
+        holder.taskDescriptionView.setText(updatedAt);
+//        holder.updatedAtView.setText(updatedAt);
+
     }
 
+    /**
+     * Returns the number of items to display.
+     */
     @Override
     public int getItemCount() {
-        return mNumberItems;
+        if (mNoteEntries == null) {
+            return 0;
+        }
+        return mNoteEntries.size();
     }
 
+    public List<NoteEntry> getNoteEntries() {
+        return mNoteEntries;
+    }
 
-    class NumberViewHolder extends RecyclerView.ViewHolder {
+    /**
+     * When data changes, this method updates the list of taskEntries
+     * and notifies the adapter to use the new values on it
+     */
+    public void setNotes(List<NoteEntry> noteEntries) {
+        mNoteEntries = noteEntries;
+        notifyDataSetChanged();
+    }
+
+    public interface ItemClickListener {
+        void onItemClickListener(int itemId);
+    }
+
+    class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
-        TextView listItemNumberView;
+        // Class variables for the task description TextViews
+        TextView taskDescriptionView;
+        TextView updatedAtView;
 
-        public NumberViewHolder(View itemView) {
+
+        public NoteViewHolder(View itemView) {
             super(itemView);
-            listItemNumberView = (TextView) itemView.findViewById(R.id.tv_note_number);
+
+            taskDescriptionView = itemView.findViewById(R.id.taskDescription);
+            updatedAtView = itemView.findViewById(R.id.taskUpdatedAt);
+            itemView.setOnClickListener(this);
         }
 
 
-        void bind(int listIndex) {
-            listItemNumberView.setText(String.valueOf(listIndex));
+        @Override
+        public void onClick(View view) {
+            int elementId = mNoteEntries.get(getAdapterPosition()).getId();
+            mItemClickListener.onItemClickListener(elementId);
         }
     }
 

@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import java.util.Date;
 
@@ -12,21 +13,23 @@ public class NoteEntry {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private int userId;
+
+    @NonNull
+    private String userId;
     private String note;
 
-    @ColumnInfo(name = "updated_at")
+    @ColumnInfo(name = "created_at")
     private Date updatedAt;
 
 
     @Ignore
-    public NoteEntry(String note, int userId, Date updatedAt) {
+    public NoteEntry(String note, String userId, Date updatedAt) {
         this.note = note;
         this.userId = userId;
         this.updatedAt = updatedAt;
     }
 
-    public NoteEntry(int id, String note, int userId, Date updatedAt) {
+    public NoteEntry(int id, String note, String userId, Date updatedAt) {
         this.id = id;
         this.note = note;
         this.userId = userId;
@@ -49,11 +52,11 @@ public class NoteEntry {
         this.note = note;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
