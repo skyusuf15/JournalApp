@@ -20,7 +20,7 @@ import static android.content.ContentValues.TAG;
 public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NoteViewHolder> {
 
     // Constant for date format
-    private static final String DATE_FORMAT = "dd/MM/yyy";
+    private static final String DATE_FORMAT = "EEE, MMM d, yyyy";
 
     // Member variable to handle item clicks
     final private ItemClickListener mItemClickListener;
@@ -66,7 +66,7 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NoteViewHold
         String updatedAt = dateFormat.format(noteEntry.getUpdatedAt());
 
         //Set values
-        holder.taskDescriptionView.setText(updatedAt);
+        holder.taskDescriptionView.setText("Note for " + updatedAt);
 //        holder.updatedAtView.setText(updatedAt);
 
     }
@@ -104,14 +104,14 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NoteViewHold
 
         // Class variables for the task description TextViews
         TextView taskDescriptionView;
-        TextView updatedAtView;
+//        TextView updatedAtView;
 
 
         public NoteViewHolder(View itemView) {
             super(itemView);
 
             taskDescriptionView = itemView.findViewById(R.id.taskDescription);
-            updatedAtView = itemView.findViewById(R.id.taskUpdatedAt);
+//            updatedAtView = itemView.findViewById(R.id.taskUpdatedAt);
             itemView.setOnClickListener(this);
         }
 

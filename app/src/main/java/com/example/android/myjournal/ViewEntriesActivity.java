@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 
@@ -41,6 +42,7 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
     private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private AppDatabase mDb;
+    Button btn_edit_note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +67,32 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
 
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        int position = viewHolder.getAdapterPosition();
-                        List<NoteEntry> notes = mAdapter.getNoteEntries();
-                        mDb.noteDao().deleteNotes(notes.get(position));
-                        retriveNotes();
-                    }
-                });
+//                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        int position = viewHolder.getAdapterPosition();
+//                        List<NoteEntry> notes = mAdapter.getNoteEntries();
+//                        mDb.noteDao().deleteNotes(notes.get(position));
+//                        retriveNotes();
+//                    }
+//                });
             }
 
         }).attachToRecyclerView(mRecyclerView);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        btn_edit_note = findViewById(R.id.btn_edit_note);
+        btn_edit_note.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Launch AddNoteActivity adding the itemId as an extra in the intent
+                Intent intent = new Intent(ViewEntriesActivity.this, AddNotes.class);
+                //intent.putExtra(AddNotes.EXTRA_NOTE_ID, );
+                startActivity(intent);
+            }
+        });
+
+        FloatingActionButton fab
+ = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,7 +165,7 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
     @Override
     public void onItemClickListener(int itemId) {
         // Launch AddNoteActivity adding the itemId as an extra in the intent
-        Intent intent = new Intent(ViewEntriesActivity.this, AddNotes.class);
+        Intent intent = new Intent(ViewEntriesActivity.this, ViewNoteActivity.class);
         intent.putExtra(AddNotes.EXTRA_NOTE_ID, itemId);
         startActivity(intent);
     }
