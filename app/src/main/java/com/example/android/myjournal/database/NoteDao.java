@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface NoteDao {
 
-    @Query("SELECT * FROM notes ORDER BY created_at")
+    @Query("SELECT * FROM notes ORDER BY created_at DESC")
     List<NoteEntry> loadAllNotesByUserId();
 
     @Insert

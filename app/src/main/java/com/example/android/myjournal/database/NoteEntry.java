@@ -29,11 +29,11 @@ public class NoteEntry {
         this.updatedAt = updatedAt;
     }
 
-    public NoteEntry(int id, String note, String userId, Date updatedAt) {
+    public NoteEntry(int id, String note, String userId) {
         this.id = id;
         this.note = note;
         this.userId = userId;
-        this.updatedAt = updatedAt;
+//        this.updatedAt = updatedAt;
     }
 
     public int getId() {

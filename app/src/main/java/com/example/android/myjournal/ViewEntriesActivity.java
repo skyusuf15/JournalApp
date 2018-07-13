@@ -48,8 +48,8 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_entries);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         mRecyclerView = findViewById(R.id.recyclerViewTasks);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -59,40 +59,29 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
         DividerItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), VERTICAL);
         mRecyclerView.addItemDecoration(decoration);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
+//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+//            @Override
+//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
+////                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+////                    @Override
+////                    public void run() {
+////                        int position = viewHolder.getAdapterPosition();
+////                        List<NoteEntry> notes = mAdapter.getNoteEntries();
+////                        mDb.noteDao().deleteNotes(notes.get(position));
+////                        retriveNotes();
+////                    }
+////                });
+//            }
+//
+//        }).attachToRecyclerView(mRecyclerView);
 
-            @Override
-            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
-//                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        int position = viewHolder.getAdapterPosition();
-//                        List<NoteEntry> notes = mAdapter.getNoteEntries();
-//                        mDb.noteDao().deleteNotes(notes.get(position));
-//                        retriveNotes();
-//                    }
-//                });
-            }
 
-        }).attachToRecyclerView(mRecyclerView);
-
-        btn_edit_note = findViewById(R.id.btn_edit_note);
-        btn_edit_note.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Launch AddNoteActivity adding the itemId as an extra in the intent
-                Intent intent = new Intent(ViewEntriesActivity.this, AddNotes.class);
-                //intent.putExtra(AddNotes.EXTRA_NOTE_ID, );
-                startActivity(intent);
-            }
-        });
-
-        FloatingActionButton fab
- = findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,9 +153,9 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
 
     @Override
     public void onItemClickListener(int itemId) {
-        // Launch AddNoteActivity adding the itemId as an extra in the intent
+        // Launch ViewNoteActivity adding the itemId as an extra in the intent
         Intent intent = new Intent(ViewEntriesActivity.this, ViewNoteActivity.class);
-        intent.putExtra(AddNotes.EXTRA_NOTE_ID, itemId);
+        intent.putExtra(ViewNoteActivity.EXTRA_NOTE_ID, itemId);
         startActivity(intent);
     }
 

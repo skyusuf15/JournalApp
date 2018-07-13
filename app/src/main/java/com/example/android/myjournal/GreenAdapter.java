@@ -1,12 +1,14 @@
 package com.example.android.myjournal;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.android.myjournal.database.NoteEntry;
@@ -40,7 +42,7 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NoteViewHold
     /**
      * Called when ViewHolders are created to fill a RecyclerView.
      *
-     * @return A new TaskViewHolder that holds the view for each task
+     * @return A new NoteViewHolder that holds the view for each task
      */
     @Override
     public NoteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -59,16 +61,28 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NoteViewHold
      * @param position The position of the data in the Cursor
      */
     @Override
-    public void onBindViewHolder(NoteViewHolder holder, int position) {
+    public void onBindViewHolder(final NoteViewHolder holder, final int position) {
         // Determine the values of the wanted data
-        NoteEntry noteEntry = mNoteEntries.get(position);
+        final NoteEntry noteEntry = mNoteEntries.get(position);
         String note = noteEntry.getNote();
         String updatedAt = dateFormat.format(noteEntry.getUpdatedAt());
 
-        //Set values
-        holder.taskDescriptionView.setText("Note for " + updatedAt);
-//        holder.updatedAtView.setText(updatedAt);
 
+        //Set values
+        holder.taskDescriptionView.setText(note + " ==Note for " + updatedAt);
+
+        holder.btn_edit_note.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //holder.btn_edit_note.getParent().requestDisallowInterceptTouchEvent(false);
+                int itemId = noteEntry.getId();
+//                Log.d(TAG, "BTN Item ID# "+ itemId);
+                Intent intent = new Intent(mContext, AddNotes.class);
+                intent.putExtra(AddNotes.EXTRA_NOTE_ID, itemId);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -99,19 +113,20 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NoteViewHold
         void onItemClickListener(int itemId);
     }
 
+
     class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
         // Class variables for the task description TextViews
         TextView taskDescriptionView;
-//        TextView updatedAtView;
+        Button btn_edit_note;
 
 
         public NoteViewHolder(View itemView) {
             super(itemView);
 
             taskDescriptionView = itemView.findViewById(R.id.taskDescription);
-//            updatedAtView = itemView.findViewById(R.id.taskUpdatedAt);
+            btn_edit_note = itemView.findViewById(R.id.btn_edit_note);
             itemView.setOnClickListener(this);
         }
 

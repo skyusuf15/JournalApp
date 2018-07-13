@@ -118,15 +118,20 @@ public class AddNotes extends AppCompatActivity {
     private void onSaveButtonClicked() {
         String noteString = mEditText.getText().toString().trim();
         Date date = new Date();
+        final NoteEntry noteEntry;
 
-        final NoteEntry noteEntry = new NoteEntry(noteString, USERID, date);
+        if (mNoteId == DEFAULT_NOTE_ID) {
+            noteEntry = new NoteEntry(noteString, USERID, date);
+        } else {
+            noteEntry = new NoteEntry(mNoteId, noteString, USERID);
+        }
+
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 if (mNoteId == DEFAULT_NOTE_ID) {
                     mDb.noteDao().insertNotes(noteEntry);
                 } else {
-                    noteEntry.setId(mNoteId);
                     mDb.noteDao().updateNotes(noteEntry);
                 }
                 finish();
