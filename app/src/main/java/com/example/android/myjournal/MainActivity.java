@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    startActivity(new Intent(MainActivity.this, ViewEntriesActivity.class));
+                    startActivity(new Intent(MainActivity.this, ViewAllNotesActivity.class));
                 } else {
 
                 }
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(MainActivity.this, "User Account Created Successfully", Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(MainActivity.this, ViewEntriesActivity.class));
+                                startActivity(new Intent(MainActivity.this, ViewAllNotesActivity.class));
                             } else {
                                 Toast.makeText(MainActivity.this, "Fail to Create User Account", Toast.LENGTH_LONG).show();
                             }

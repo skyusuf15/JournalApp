@@ -1,17 +1,13 @@
 package com.example.android.myjournal;
 
-import android.content.ClipData;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,19 +16,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-
 import com.example.android.myjournal.database.AppDatabase;
 import com.example.android.myjournal.database.NoteEntry;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Date;
 import java.util.List;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 
-public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapter.ItemClickListener {
-
-
+public class ViewAllNotesActivity extends AppCompatActivity implements GreenAdapter.ItemClickListener {
     // Firebase Authentication fields
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
@@ -47,9 +41,7 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_entries);
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_view_all_notes);
 
         mRecyclerView = findViewById(R.id.recyclerViewTasks);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -59,33 +51,18 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
         DividerItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), VERTICAL);
         mRecyclerView.addItemDecoration(decoration);
 
-//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-//            @Override
-//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
-////                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-////                    @Override
-////                    public void run() {
-////                        int position = viewHolder.getAdapterPosition();
-////                        List<NoteEntry> notes = mAdapter.getNoteEntries();
-////                        mDb.noteDao().deleteNotes(notes.get(position));
-////                        retriveNotes();
-////                    }
-////                });
-//            }
-//
-//        }).attachToRecyclerView(mRecyclerView);
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ViewEntriesActivity.this, AddNotes.class));
+                if (containsDate(mAdapter.getNoteEntries(), new Date())) {
+                    Toast.makeText(ViewAllNotesActivity.this, "You already have a note for today, edit to continue!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    startActivity(new Intent(ViewAllNotesActivity.this, AddNotes.class));
+                }
             }
         });
 
@@ -104,6 +81,8 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
                 }
             }
         };
+
+
     }
 
     @Override
@@ -119,7 +98,7 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
             public void run() {
                 Log.d(TAG, "run: USERID# " + USERID);
                 if (USERID == null) {
-                    Toast.makeText(ViewEntriesActivity.this, "User Details Not Found!", Toast.LENGTH_LONG);
+                    Toast.makeText(ViewAllNotesActivity.this, "User Details Not Found!", Toast.LENGTH_LONG);
                     return;
                 }
                 final List<NoteEntry> notes = mDb.noteDao().loadAllNotesByUserId();
@@ -131,6 +110,11 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
                 });
             }
         });
+    }
+
+    public boolean containsDate(final List<NoteEntry> notes, final Date date) {
+        // notes.stream().map(NoteEntry::getUpdatedAt).filter(date::equals).findFirst().isPresent();
+        return notes.stream().filter(o -> o.getUpdatedAt().equals(date)).findFirst().isPresent();
     }
 
     @Override
@@ -146,7 +130,7 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
         if (id == R.id.userLogout) {
             mAuth.signOut();
             finish();
-            startActivity(new Intent(ViewEntriesActivity.this, LoginActivity.class));
+            startActivity(new Intent(ViewAllNotesActivity.this, LoginActivity.class));
         }
         return true;
     }
@@ -154,7 +138,7 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
     @Override
     public void onItemClickListener(int itemId) {
         // Launch ViewNoteActivity adding the itemId as an extra in the intent
-        Intent intent = new Intent(ViewEntriesActivity.this, ViewNoteActivity.class);
+        Intent intent = new Intent(ViewAllNotesActivity.this, ViewNoteActivity.class);
         intent.putExtra(ViewNoteActivity.EXTRA_NOTE_ID, itemId);
         startActivity(intent);
     }
@@ -170,5 +154,4 @@ public class ViewEntriesActivity extends AppCompatActivity implements GreenAdapt
         super.onStop();
         mAuth.removeAuthStateListener(mAuthListener);
     }
-
 }

@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="8dp"
-    tools:context=".ViewEntriesActivity">
+    tools:context=".ViewAllNotesActivity">
 
     <LinearLayout
         android:layout_width="0dp"

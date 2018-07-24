@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.android.myjournal.database.AppDatabase;
 import com.example.android.myjournal.database.NoteEntry;
@@ -25,6 +26,7 @@ public class AddNotes extends AppCompatActivity {
 
     // Constant for default note id to be used when not in update mode
     private static final int DEFAULT_NOTE_ID = -1;
+
     // Constant for logging
     private static final String TAG = AddNotes.class.getSimpleName();
     private static final String USERID = FirebaseAuth.getInstance().getUid();
@@ -36,6 +38,7 @@ public class AddNotes extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
     private int mNoteId = DEFAULT_NOTE_ID;
+    private Date createdAt;
 
     // Member variable for the Database
     private AppDatabase mDb;
@@ -113,24 +116,36 @@ public class AddNotes extends AppCompatActivity {
             return;
         }
         mEditText.setText(noteEntry.getNote());
+        createdAt = noteEntry.getUpdatedAt();
     }
 
     private void onSaveButtonClicked() {
         String noteString = mEditText.getText().toString().trim();
-        Date date = new Date();
+        final Date date = new Date();
         final NoteEntry noteEntry;
+
 
         if (mNoteId == DEFAULT_NOTE_ID) {
             noteEntry = new NoteEntry(noteString, USERID, date);
         } else {
-            noteEntry = new NoteEntry(mNoteId, noteString, USERID);
+            noteEntry = new NoteEntry(mNoteId, noteString, USERID, createdAt);
         }
+
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 if (mNoteId == DEFAULT_NOTE_ID) {
-                    mDb.noteDao().insertNotes(noteEntry);
+
+                    NoteEntry dd = mDb.noteDao().loadNoteByDate(date);
+                   if( dd != null) {
+                       Log.d(TAG, "run: Date existed!####  " + dd.getUpdatedAt());
+                       Toast.makeText(AddNotes.this, "You Already have a note for today! Add this to it.", Toast.LENGTH_LONG).show();
+                   } else {
+                       Log.d(TAG, "run: No Date Found! ####  ");
+                       mDb.noteDao().insertNotes(noteEntry);
+                      }
+
                 } else {
                     mDb.noteDao().updateNotes(noteEntry);
                 }

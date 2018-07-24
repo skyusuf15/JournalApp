@@ -3,12 +3,14 @@ package com.example.android.myjournal.database;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import java.util.Date;
 
-@Entity(tableName = "notes")
+@Entity(tableName = "notes", indices = {
+        @Index(value = {"created_at"}, unique = true)})
 public class NoteEntry {
 
     @PrimaryKey(autoGenerate = true)
@@ -29,11 +31,11 @@ public class NoteEntry {
         this.updatedAt = updatedAt;
     }
 
-    public NoteEntry(int id, String note, String userId) {
+    public NoteEntry(int id, String note, String userId, Date updatedAt) {
         this.id = id;
         this.note = note;
         this.userId = userId;
-//        this.updatedAt = updatedAt;
+        this.updatedAt = updatedAt;
     }
 
     public int getId() {
