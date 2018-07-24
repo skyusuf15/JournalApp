@@ -20,12 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ViewEntriesActivity"
-            android:label="@string/title_activity_view_entries"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AddNotes" />
         <activity android:name=".ViewNoteActivity" />
+        <activity android:name=".ViewAllNotesActivity"></activity>
     </application>
 
 </manifest>

@@ -3,6 +3,7 @@ package com.example.android.myjournal;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.example.android.myjournal.database.NoteEntry;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,6 +34,9 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NoteViewHold
     private Context mContext;
     // Date formatter
     private SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
+    Date date = new Date();
+    int kounter = 0;
+
 
 
     public GreenAdapter(Context context, ItemClickListener listener) {
@@ -69,7 +74,7 @@ public class GreenAdapter extends RecyclerView.Adapter<GreenAdapter.NoteViewHold
 
 
         //Set values
-        holder.taskDescriptionView.setText(note + " ==Note for " + updatedAt);
+        holder.taskDescriptionView.setText(updatedAt);
 
         holder.btn_edit_note.setOnClickListener(new View.OnClickListener() {
             @Override

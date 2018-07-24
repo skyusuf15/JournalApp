@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    startActivity(new Intent(LoginActivity.this, ViewEntriesActivity.class));
+                    startActivity(new Intent(LoginActivity.this, ViewAllNotesActivity.class));
                 } else {
 
                 }
@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                startActivity(new Intent(LoginActivity.this, ViewEntriesActivity.class));
+                                startActivity(new Intent(LoginActivity.this, ViewAllNotesActivity.class));
                             } else {
                                 Toast.makeText(LoginActivity.this, "Sign in failed!", Toast.LENGTH_LONG).show();
                             }

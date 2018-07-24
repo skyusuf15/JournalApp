@@ -7,6 +7,7 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -26,4 +27,7 @@ public interface NoteDao {
 
     @Query("SELECT * FROM notes WHERE id = :id")
     NoteEntry loadNoteById(int id);
+
+    @Query("SELECT * FROM notes WHERE created_at = :date")
+    NoteEntry loadNoteByDate(Date date);
 }
