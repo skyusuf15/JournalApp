@@ -20,9 +20,16 @@ import com.example.android.myjournal.database.AppDatabase;
 import com.example.android.myjournal.database.NoteEntry;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
 
@@ -31,9 +38,14 @@ public class ViewAllNotesActivity extends AppCompatActivity implements GreenAdap
     FirebaseAuth mAuth;
     FirebaseAuth.AuthStateListener mAuthListener;
 
+    // Firebase Database
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("notes");
+
     private GreenAdapter mAdapter;
-    private static final String USERID = FirebaseAuth.getInstance().getUid();
+    private String USERID = FirebaseAuth.getInstance().getUid();
     private static final String TAG = MainActivity.class.getSimpleName();
+    private SimpleDateFormat dateFormatE = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private RecyclerView mRecyclerView;
     private AppDatabase mDb;
     Button btn_edit_note;
@@ -57,7 +69,7 @@ public class ViewAllNotesActivity extends AppCompatActivity implements GreenAdap
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (containsDate(mAdapter.getNoteEntries(), new Date())) {
+                if (containsDate(mAdapter.getNoteEntries(), new Date(), dateFormatE)) {
                     Toast.makeText(ViewAllNotesActivity.this, "You already have a note for today, edit to continue!", Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -82,6 +94,18 @@ public class ViewAllNotesActivity extends AppCompatActivity implements GreenAdap
             }
         };
 
+        myRef.child("notes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
     }
 
@@ -101,7 +125,7 @@ public class ViewAllNotesActivity extends AppCompatActivity implements GreenAdap
                     Toast.makeText(ViewAllNotesActivity.this, "User Details Not Found!", Toast.LENGTH_LONG);
                     return;
                 }
-                final List<NoteEntry> notes = mDb.noteDao().loadAllNotesByUserId();
+                final List<NoteEntry> notes = mDb.noteDao().loadAllNotesByUserId(USERID);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -112,9 +136,9 @@ public class ViewAllNotesActivity extends AppCompatActivity implements GreenAdap
         });
     }
 
-    public boolean containsDate(final List<NoteEntry> notes, final Date date) {
+    public boolean containsDate(final List<NoteEntry> notes, final Date date, final SimpleDateFormat dateFormat) {
         // notes.stream().map(NoteEntry::getUpdatedAt).filter(date::equals).findFirst().isPresent();
-        return notes.stream().filter(o -> o.getUpdatedAt().equals(date)).findFirst().isPresent();
+        return notes.stream().filter(o -> dateFormat.format(o.getUpdatedAt()).equals(dateFormat.format(date))).findFirst().isPresent();
     }
 
     @Override

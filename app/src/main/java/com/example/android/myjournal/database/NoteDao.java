@@ -13,8 +13,8 @@ import java.util.List;
 @Dao
 public interface NoteDao {
 
-    @Query("SELECT * FROM notes ORDER BY created_at DESC")
-    List<NoteEntry> loadAllNotesByUserId();
+    @Query("SELECT * FROM notes WHERE userId = :userId ORDER BY created_at DESC")
+    List<NoteEntry> loadAllNotesByUserId(String userId);
 
     @Insert
     void insertNotes(NoteEntry noteEntry);
@@ -28,6 +28,6 @@ public interface NoteDao {
     @Query("SELECT * FROM notes WHERE id = :id")
     NoteEntry loadNoteById(int id);
 
-    @Query("SELECT * FROM notes WHERE created_at = :date")
-    NoteEntry loadNoteByDate(Date date);
+    @Query("SELECT created_at FROM notes WHERE id = (SELECT MAX(id)  FROM notes) AND userId = :userID")
+    Date loadLastDate(String userID);
 }

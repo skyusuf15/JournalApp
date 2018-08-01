@@ -12,17 +12,46 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".LoginActivity"
+            android:label="Login"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddNotes" />
-        <activity android:name=".ViewNoteActivity" />
-        <activity android:name=".ViewAllNotesActivity"></activity>
+
+        <activity android:name=".MainActivity"
+            android:label="Register"
+            android:parentActivityName=".LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity"/>
+
+        </activity>
+
+        <activity android:name=".ViewAllNotesActivity"
+            android:label="View All Notes"
+            android:launchMode="singleTop"
+            />
+
+        <activity android:name=".ViewNoteActivity"
+            android:label="View Note"
+            android:parentActivityName=".ViewAllNotesActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ViewAllNotesActivity"/>
+
+        </activity>
+        <activity android:name=".AddNotes"
+            android:label="Add/Edit Note"
+            android:parentActivityName=".ViewAllNotesActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ViewAllNotesActivity"/>
+        </activity>
+
     </application>
 
 </manifest>

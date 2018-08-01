@@ -2,9 +2,12 @@ package com.example.android.myjournal;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button createUser, moveToLogin;
+    Button createUser;
     EditText userEmailEdit, userPasswordEdit;
 
     // Firebase Authentication fields
@@ -30,8 +33,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ActionBar actionBar = this.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         createUser = findViewById(R.id.createUser);
-        moveToLogin = findViewById(R.id.moveToLogin);
 
         userEmailEdit = findViewById(R.id.emailEditText);
         userPasswordEdit = findViewById(R.id.passwordEditText);
@@ -74,13 +81,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        moveToLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            }
-        });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

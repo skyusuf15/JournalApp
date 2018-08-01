@@ -20,7 +20,7 @@
         android:id="@+id/passwordEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentTop   ="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="216dp"
         android:ems="10"
@@ -36,10 +36,4 @@
         android:layout_marginBottom="141dp"
         android:text="Register" />
 
-    <Button
-        android:id="@+id/moveToLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="LOGIN" />
 </RelativeLayout>

@@ -20,11 +20,15 @@
         <!-- EditText for getttaskEntrytask description input -->
         <EditText
             android:id="@+id/editTextNoteDescription"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="start"
+            android:lines="7"
+            android:gravity="top|left"
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"
             android:hint="@string/edit_description"
-            android:paddingBottom="@dimen/activity_horizontal_margin" />
+            android:paddingBottom="@dimen/activity_horizontal_margin"
+            />
 
 
         <!-- Add button -->

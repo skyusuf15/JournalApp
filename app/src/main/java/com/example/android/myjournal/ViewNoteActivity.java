@@ -2,10 +2,16 @@ package com.example.android.myjournal;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+<<<<<<< Updated upstream
+=======
+import android.view.MenuItem;
+>>>>>>> Stashed changes
 import android.widget.TextView;
 
 import com.example.android.myjournal.database.AppDatabase;
@@ -28,7 +34,7 @@ public class ViewNoteActivity extends AppCompatActivity {
     private static final int DEFAULT_NOTE_ID = -1;
     // Constant for logging
     private static final String TAG = ViewNoteActivity.class.getSimpleName();
-    private static final String USERID = FirebaseAuth.getInstance().getUid();
+    private String USERID = FirebaseAuth.getInstance().getUid();
 
     // Constant for date format
     private static final String DATE_FORMAT = "EEE, MMM d, yyyy";
@@ -51,6 +57,11 @@ public class ViewNoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_note);
+
+        ActionBar actionBar = this.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         mDb = AppDatabase.getInstance(getApplicationContext());
 
@@ -96,6 +107,14 @@ public class ViewNoteActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+        }
+        return super.onOptionsItemSelected(item);
+    }
     private void populateUI(NoteEntry note) {
         tv_note = findViewById(R.id.tv_note);
         tv_note_date = findViewById(R.id.tv_note_date);
@@ -105,6 +124,7 @@ public class ViewNoteActivity extends AppCompatActivity {
             return;
         }
         tv_note.setText(note.getNote());
+        tv_note.setMovementMethod(new ScrollingMovementMethod());
         tv_note_date.setText(dateFormat.format(note.getUpdatedAt()));
     }
 
