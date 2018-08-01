@@ -4,9 +4,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.android.myjournal.database.AppDatabase;
@@ -100,6 +99,7 @@ public class ViewNoteActivity extends AppCompatActivity {
     private void populateUI(NoteEntry note) {
         tv_note = findViewById(R.id.tv_note);
         tv_note_date = findViewById(R.id.tv_note_date);
+        tv_note.setMovementMethod(new ScrollingMovementMethod());
 
         if (note == null) {
             return;
